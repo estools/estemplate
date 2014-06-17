@@ -21,7 +21,7 @@ var estemplate = require('estemplate');
 
 ### estemplate(tmplString, [options], data)
 
-Generates Spidermonkey AST from given template string, optional [esprima](http://esprima.org/doc/index.html) options and data.
+Generates [SpiderMonkey AST](https://developer.mozilla.org/en-US/docs/SpiderMonkey/Parser_API) from given template string, optional [esprima](http://esprima.org/doc/index.html) options and data.
 
 Template string should be JavaScript code with `<% ...execute me... %>` markers for compile-time calculations and `<%= ...insert me... %>` markers for node substitutions (adapted ERB/Underscore/etc. style).
 
