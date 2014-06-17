@@ -8,13 +8,6 @@ var readFile = require('fs').readFile;
 var template = 'var <%= varName %> = <%= value %> + 1;';
 
 exports.estemplate = {
-  'caching': function (test) {
-    var f1 = estemplate.compile(template);
-    var f2 = estemplate.compile(template);
-    test.strictEqual(f1, f2);
-    test.done();
-  },
-
   'default options': function (test) {
     var ast = estemplate(template, {
       varName: {type: 'Identifier', name: 'myVar'},
