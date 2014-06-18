@@ -78,7 +78,7 @@ var programBlock = esprima.parse(fs.readFileSync('index.js', 'utf-8'), {loc: tru
 programBlock.type = 'BlockStatement';
 
 // generate resulting AST with preserved locations and file names
-var ast = estemplate(template, {loc: true, source: 'template.jst', attachComment: true}, {
+var ast = estemplate(template, {attachComment: true}, {
 	block: programBlock
 });
 
