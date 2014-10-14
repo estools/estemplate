@@ -1,6 +1,6 @@
 {
   "name": "estemplate",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "main": "lib/estemplate.js",
   "description": "Proper JavaScript code templating with source maps support.",
   "keywords": [
@@ -8,6 +8,7 @@
     "spidermonkey",
     "mozilla",
     "ast",
+    "code",
     "template",
     "wrap",
     "substitute"
@@ -42,6 +43,6 @@
   },
   "dependencies": {
     "esprima": "^1.2.2",
-    "estraverse": "^1.5.0"
+    "estraverse": "^1.5.1"
   }
 }

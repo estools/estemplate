@@ -23,7 +23,14 @@ var estemplate = require('estemplate');
 
 Generates [SpiderMonkey AST](https://developer.mozilla.org/en-US/docs/SpiderMonkey/Parser_API) from given template string, optional [esprima](http://esprima.org/doc/index.html) options and data.
 
-Template string should be JavaScript code with `<% ...execute me... %>` markers for compile-time calculations and `<%= ...insert me... %>` markers for node substitutions (adapted ERB/Underscore/etc. style).
+Supported template substitution markers:
+
+  * Compile-time execution block: `<%= var localCounter = 0; %>`
+  * Node substitution: `var x = <%= expr %> + 1;`
+  * Array elements: `var a = [%= elements %];`
+  * Function parameters: `function f(%= params %) {}`
+  * Call arguments: `var x = f(%= args %);`
+  * Block statements: `define(function () {%= body %});`
 
 ### estemplate.compile(tmplString, [options])
 
@@ -43,16 +50,12 @@ console.log(escodegen.generate(ast));
 // > var myVar = 123 + 1;
 ```
 
-### Advanced generation (preserving locations and file names)
+### Advanced generation (with source map)
 
 > template.jst
 
 ```javascript
-/** Simplified CommonJS wrapper */
-
-define(function (require, exports, module) {
-<%= block %>
-});
+define(function (require, exports, module) {% = body %});
 ```
 
 > index.js
@@ -69,35 +72,34 @@ module.exports = function () {
 > main code
 
 ```javascript
-// synchronously reading wrapper template and code (for example purposes only)
+var templateCode = fs.readFileSync('template.jst', 'utf-8');
+var template = estemplate.compile(templateCode, {attachComment: true});
 
-var template = fs.readFileSync('template.jst', 'utf-8');
-var programBlock = esprima.parse(fs.readFileSync('index.js', 'utf-8'), {loc: true, source: 'index.js'});
-
-// changing Program to BlockStatement so it could be injected
-programBlock.type = 'BlockStatement';
-
-// generate resulting AST with preserved locations and file names
-var ast = estemplate(template, {attachComment: true}, {
-	block: programBlock
+var program = esprima.parse(fs.readFileSync('index.js', 'utf-8'), {
+    loc: true,
+    source: 'index.js'
 });
 
-// generate code and source map as {code, map}
-var output = escodegen.generate(ast, {comment: true, sourceMap: true, sourceMapWithCode: true});
+var ast = template({body: program.body});
 
-console.log(output.code);                                                           
+var output = escodegen.generate(ast, {
+  sourceMap: true,
+  sourceMapWithCode: true
+});
+
+console.log(output.code);
 ```
 
 > output
 
 ```javascript
 /** Simplified CommonJS wrapper */                                                  
-define(function (require, exports, module) {                                        
-    var dependency1 = require('dependency1'), dependency2 = require('dependency2'); 
-    module.exports = function () {                                                  
-        return dependency1() + dependency2();                                       
-    };                                                                              
-});                      
+define(function (require, exports, module) {
+    var dependency1 = require('dependency1'), dependency2 = require('dependency2');
+    module.exports = function () {
+        return dependency1() + dependency2();
+    };
+});
 ```
 
 ## Contributing
