@@ -93,7 +93,6 @@ console.log(output.code);
 > output
 
 ```javascript
-/** Simplified CommonJS wrapper */                                                  
 define(function (require, exports, module) {
     var dependency1 = require('dependency1'), dependency2 = require('dependency2');
     module.exports = function () {
