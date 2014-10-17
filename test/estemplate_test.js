@@ -36,19 +36,21 @@ exports.estemplate = {
     value: {type: 'Literal', value: 123}
   }, 'var myVar = 123 + 1;'),
 
-  'array spread': tmplTest('var a = [%= items %];', {
-    items: [{type: 'Literal', value: 123}, {type: 'Literal', value: 456}]
-  }, 'var a = [\n    123,\n    456\n];'),
+  spread: {
+    'array elements': tmplTest('var a = [%= items %];', {
+      items: [{type: 'Literal', value: 123}, {type: 'Literal', value: 456}]
+    }, 'var a = [\n    123,\n    456\n];'),
 
-  'call arguments spread': tmplTest('var x = f(%= items %);', {
-    items: [{type: 'Literal', value: 123}, {type: 'Literal', value: 456}]
-  }, 'var x = f(123, 456);'),
+    'call arguments': tmplTest('var x = f(%= items %);', {
+      items: [{type: 'Literal', value: 123}, {type: 'Literal', value: 456}]
+    }, 'var x = f(123, 456);'),
 
-  'function declaration params spread': tmplTest('function f(%= params %) {}', {
-    params: [{type: 'Identifier', name: 'a'}, {type: 'Identifier', name: 'b'}]
-  }, 'function f(a, b) {\n}'),
+    'function params': tmplTest('function f(%= params %) {}', {
+      params: [{type: 'Identifier', name: 'a'}, {type: 'Identifier', name: 'b'}]
+    }, 'function f(a, b) {\n}'),
 
-  'block spread': tmplTest('define(function () {%= body %});', {
-    body: parse('module.exports = require("./module").property;').body
-  }, 'define(function () {\n    module.exports = require(\'./module\').property;\n});')
+    'block statements': tmplTest('define(function () {%= body %});', {
+      body: parse('module.exports = require("./module").property;').body
+    }, 'define(function () {\n    module.exports = require(\'./module\').property;\n});')
+  }
 };
