@@ -25,7 +25,7 @@ Generates [SpiderMonkey AST](https://developer.mozilla.org/en-US/docs/SpiderMonk
 
 Supported template substitution markers:
 
-  * Compile-time execution block: `<%= var localCounter = 0; %>`
+  * Compile-time execution block: `<% var localCounter = 0; %>`
   * Node substitution: `var x = <%= expr %> + 1;`
   * Array elements: `var a = [%= elements %];`
   * Function parameters: `function f(%= params %) {}`
