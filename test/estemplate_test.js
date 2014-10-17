@@ -5,18 +5,15 @@ var parse = require('esprima').parse;
 var generate = require('escodegen').generate;
 var readFile = require('fs').readFile;
 
-exports.estemplate = {
-  'simple substitution': function (test) {
-    var ast = estemplate('var <%= varName %> = <%= value %> + 1;', {
-      varName: {type: 'Identifier', name: 'myVar'},
-      value: {type: 'Literal', value: 123}
-    });
-
-    test.equal(generate(ast), 'var myVar = 123 + 1;');
-
+function tmplTest(tmpl, data, code) {
+  return function (test) {
+    var ast = estemplate(tmpl, data);
+    test.equal(generate(ast), code);
     test.done();
-  },
+  };
+}
 
+exports.estemplate = {
   'ast locations': function (test) {
     var ast = estemplate('define(function () { <%= stmt %> });', {loc: true, source: 'template.jst'}, {
       stmt: parse('module.exports = require("./module").property;', {loc: true, source: 'source.js'}).body[0]
@@ -34,43 +31,24 @@ exports.estemplate = {
     });
   },
 
-  'array spread': function (test) {
-    var ast = estemplate('var a = [%= items %];', {
-      items: [{type: 'Literal', value: 123}, {type: 'Literal', value: 456}]
-    });
+  'simple substitution': tmplTest('var <%= varName %> = <%= value %> + 1;', {
+    varName: {type: 'Identifier', name: 'myVar'},
+    value: {type: 'Literal', value: 123}
+  }, 'var myVar = 123 + 1;'),
 
-    test.equal(generate(ast), 'var a = [\n    123,\n    456\n];');
+  'array spread': tmplTest('var a = [%= items %];', {
+    items: [{type: 'Literal', value: 123}, {type: 'Literal', value: 456}]
+  }, 'var a = [\n    123,\n    456\n];'),
 
-    test.done();
-  },
+  'call arguments spread': tmplTest('var x = f(%= items %);', {
+    items: [{type: 'Literal', value: 123}, {type: 'Literal', value: 456}]
+  }, 'var x = f(123, 456);'),
 
-  'call arguments spread': function (test) {
-    var ast = estemplate('var x = f(%= items %);', {
-      items: [{type: 'Literal', value: 123}, {type: 'Literal', value: 456}]
-    });
+  'function declaration params spread': tmplTest('function f(%= params %) {}', {
+    params: [{type: 'Identifier', name: 'a'}, {type: 'Identifier', name: 'b'}]
+  }, 'function f(a, b) {\n}'),
 
-    test.equal(generate(ast), 'var x = f(123, 456);');
-
-    test.done();
-  },
-
-  'function declaration params spread': function (test) {
-    var ast = estemplate('function f(%= params %) {}', {
-      params: [{type: 'Identifier', name: 'a'}, {type: 'Identifier', name: 'b'}]
-    });
-
-    test.equal(generate(ast), 'function f(a, b) {\n}');
-
-    test.done();
-  },
-
-  'block spread': function (test) {
-    var ast = estemplate('define(function () {%= body %});', {
-      body: parse('module.exports = require("./module").property;').body
-    });
-
-    test.equal(generate(ast), 'define(function () {\n    module.exports = require(\'./module\').property;\n});');
-
-    test.done();
-  }
+  'block spread': tmplTest('define(function () {%= body %});', {
+    body: parse('module.exports = require("./module").property;').body
+  }, 'define(function () {\n    module.exports = require(\'./module\').property;\n});')
 };
