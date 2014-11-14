@@ -3,12 +3,21 @@
 var estemplate = require('../lib/estemplate.js');
 var parse = require('esprima').parse;
 var generate = require('escodegen').generate;
+var genOpts = {
+  format: {
+    indent: {
+      style: ''
+    },
+    newline: ' ',
+    quotes: 'double'
+  }
+};
 var readFile = require('fs').readFile;
 
 function tmplTest(tmpl, data, code) {
   return function (test) {
     var ast = estemplate(tmpl, data);
-    test.equal(generate(ast), code);
+    test.equal(generate(ast, genOpts), code);
     test.done();
   };
 }
@@ -39,7 +48,7 @@ exports.estemplate = {
   spread: {
     'array elements': tmplTest('var a = [%= items %];', {
       items: [{type: 'Literal', value: 123}, {type: 'Literal', value: 456}]
-    }, 'var a = [\n    123,\n    456\n];'),
+    }, 'var a = [ 123, 456 ];'),
 
     'call arguments': tmplTest('var x = f(%= items %);', {
       items: [{type: 'Literal', value: 123}, {type: 'Literal', value: 456}]
@@ -47,10 +56,29 @@ exports.estemplate = {
 
     'function params': tmplTest('function f(%= params %) {}', {
       params: [{type: 'Identifier', name: 'a'}, {type: 'Identifier', name: 'b'}]
-    }, 'function f(a, b) {\n}'),
+    }, 'function f(a, b) { }'),
 
     'block statements': tmplTest('define(function () {%= body %});', {
       body: parse('module.exports = require("./module").property;').body
-    }, 'define(function () {\n    module.exports = require(\'./module\').property;\n});')
+    }, 'define(function () { module.exports = require("./module").property; });'),
+
+    'concatenate with inline elements': {
+      'in the beginning': tmplTest('var a = [123, %= items %];', {
+        items: [{type: 'Literal', value: 456}, {type: 'Literal', value: 789}]
+      }, 'var a = [ 123, 456, 789 ];'),
+
+      'in the end': tmplTest('function f(%= params %, callback) {}', {
+        params: [{type: 'Identifier', name: 'a'}, {type: 'Identifier', name: 'b'}]
+      }, 'function f(a, b, callback) { }'),
+
+      'around': tmplTest('function f() { console.time("module"); %= body %; console.timeEnd("module"); }', {
+        body: parse('init(); doSmth(); finalize();').body
+      }, 'function f() { console.time("module"); init(); doSmth(); finalize(); console.timeEnd("module"); }'),
+
+      'in between': tmplTest('function f() { %= init %; doSmth(); %= finalize %; }', {
+        init: parse('console.time("module"); init();').body,
+        finalize: parse('finalize(); console.timeEnd("module");').body
+      }, 'function f() { console.time("module"); init(); doSmth(); finalize(); console.timeEnd("module"); }')
+    }
   }
 };

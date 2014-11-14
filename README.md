@@ -32,6 +32,11 @@ Supported template substitution markers:
   * Call arguments: `var x = f(%= args %);`
   * Block statements: `define(function () {%= body %});`
 
+You can combine list substitutions with inline elements like:
+  * `var a = [0, %= numbers %, Infinity];`
+  * `function f(%= params %, callback) {}`
+  * `define(function () { console.time('Module'); %= body %; console.timeEnd('Module'); });`
+
 ### estemplate.compile(tmplString, [options])
 
 Same as above but returns function that can be reused for AST generation (just save result and call with `data` as argument whenever needed).
