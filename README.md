@@ -31,11 +31,16 @@ Supported template substitution markers:
   * Function parameters: `function f(%= params %) {}`
   * Call arguments: `var x = f(%= args %);`
   * Block statements: `define(function () {%= body %});`
+  * Literals: `var x = "%= 'alpha' + 'beta' %";`
 
 You can combine list substitutions with inline elements like:
   * `var a = [0, %= numbers %, Infinity];`
   * `function f(%= params %, callback) {}`
   * `define(function () { console.time('Module'); %= body %; console.timeEnd('Module'); });`
+
+From template, you can access entire data object via `it` and estemplate itself via `estemplate`.
+
+If you set `options.fast` to true, then passed data will be available only via `it` variable, but template function in general will be significantly faster.
 
 ### estemplate.compile(tmplString, [options])
 

@@ -62,6 +62,11 @@ exports.estemplate = {
       body: parse('module.exports = require("./module").property;').body
     }, 'define(function () { module.exports = require("./module").property; });'),
 
+    'literals': tmplTest('var a = "%= x %"; var b = \'%= y %\';', {
+      x: 'alpha',
+      y: 'beta'
+    }, 'var a = "alpha"; var b = "beta";'),
+
     'concatenate with inline elements': {
       'in the beginning': tmplTest('var a = [123, %= items %];', {
         items: [{type: 'Literal', value: 456}, {type: 'Literal', value: 789}]
