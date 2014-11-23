@@ -1,4 +1,4 @@
-# estemplate [![Build Status](https://secure.travis-ci.org/RReverser/estemplate.png?branch=master)](http://travis-ci.org/RReverser/estemplate)
+# estemplate [![Build Status](https://secure.travis-ci.org/estools/estemplate.png?branch=master)](http://travis-ci.org/estools/estemplate)
 
 > Proper JavaScript code templating with source maps support.
 
