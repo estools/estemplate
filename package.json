@@ -41,7 +41,7 @@
     "test": "grunt"
   },
   "dependencies": {
-    "esprima": "^1.2.2",
-    "estraverse": "^1.7.1"
+    "esprima": "^2.7.0",
+    "estraverse": "^4.1.1"
   }
 }
