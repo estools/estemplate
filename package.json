@@ -1,6 +1,6 @@
 {
   "name": "estemplate",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "main": "lib/estemplate.js",
   "description": "Proper JavaScript code templating with source maps support.",
   "keywords": [
