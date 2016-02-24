@@ -62,6 +62,10 @@ exports.estemplate = {
       body: parse('module.exports = require("./module").property;').body
     }, 'define(function () { module.exports = require("./module").property; });'),
 
+    'program root': tmplTest('var x = 42; %= body %', {
+      body: parse('module.exports = require("./module").property;').body
+    }, 'var x = 42; module.exports = require("./module").property;'),
+
     'literals': tmplTest('var a = "%= x %"; var b = \'%= y %\';', {
       x: 'alpha',
       y: 'beta'
