@@ -1,5 +1,6 @@
 {
   "type": "Program",
+  "sourceType": "script",
   "body": [
     {
       "type": "ExpressionStatement",
@@ -193,7 +194,6 @@
                 "source": "template.jst"
               }
             },
-            "rest": null,
             "generator": false,
             "expression": false,
             "loc": {
